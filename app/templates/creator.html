@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>Добавить задание</h1>
+    <div id="board" style="width: 400px"></div>
+{% endblock %}
+
+{% block app_scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/chessboard-1.0.0.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            var board1 = new ChessBoard('board', 'start');
+        });
+    </script>
+{% endblock %}
