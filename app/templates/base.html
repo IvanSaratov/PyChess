@@ -42,7 +42,7 @@
                     {% if current_user.is_anonymous %}
                         <li><a href="{{ url_for('auth.login') }}">Войти</a></li>
                     {% else %}
-                        <li><a href="{{ url_for('creator') }}">Добавить задание</a></li>
+                        <li><a href="{{ url_for('main.creator') }}">Добавить задание</a></li>
                         <li><a href="{{ url_for('auth.logout') }}">Выйти</a></li>
                     {% endif %}
                 </ul>
@@ -71,5 +71,10 @@
 {% block scripts %}
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
     {% block app_scripts %}
+    {% endblock %}
+{% endblock %}
+
+{% block styles %}
+    {% block app_styles %}
     {% endblock %}
 {% endblock %}
