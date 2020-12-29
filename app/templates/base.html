@@ -69,12 +69,14 @@
 {% endblock %}
 
 {% block scripts %}
+    {{ super() }}
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
     {% block app_scripts %}
     {% endblock %}
 {% endblock %}
 
 {% block styles %}
+    {{ super() }}
     {% block app_styles %}
     {% endblock %}
 {% endblock %}
