@@ -24,6 +24,12 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+association_task_table = db.Table('task_association',
+                                  db.Column('set_id', db.Integer, db.ForeignKey('set.id')),
+                                  db.Column('task_id', db.Integer, db.ForeignKey('task.id'))
+                                  )
+
+
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(64), unique=True)
@@ -34,3 +40,7 @@ class Task(db.Model):
 class Set(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(64), unique=True)
+    tasks = db.relationship('Task', secondary=association_task_table,
+                            primaryjoin=(association_task_table.c.task_id == id),
+                            secondaryjoin=(association_task_table.c.set_id == id),
+                            backref=db.backref('association_task_table', lazy='dynamic'), lazy='dynamic')
