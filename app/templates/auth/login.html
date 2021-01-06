@@ -5,9 +5,14 @@
     <h1>Вход</h1>
     <div class="row">
         <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
+            <form action="{{ url_for('auth.login') }}" method="post" class="form" role="form">
+                {{ form.hidden_tag() }}
+                {{ wtf.form_field(form.username) }}
+                {{ wtf.form_field(form.password) }}
+                {{ wtf.form_field(form.remember_me) }}
+                {{ wtf.form_field(form.submit, class='btn btn-primary') }}
+                <a href="{{ url_for('auth.registration') }}" class="btn btn-success">Зарегистрироваться</a>
+            </form>
         </div>
     </div>
-    <br>
-    <p><a href="{{ url_for('auth.registration') }}" class="btn btn-default">Зарегистрироваться</a></p>
 {% endblock %}
