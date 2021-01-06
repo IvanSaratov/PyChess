@@ -10,3 +10,9 @@ class TaskCreateForm(FlaskForm):
                             validators=[DataRequired(), Length(min=1, max=128)], default='start')
     end_pos = HiddenField('Конечная позиция', validators=[DataRequired(), Length(min=1, max=128)], default='end')
     submit = SubmitField('Добавить')
+
+
+class TournamentCreateForm(FlaskForm):
+    id = HiddenField('ID')
+    name = StringField('Название турнира', validators=[DataRequired(), Length(min=1, max=64)])
+    submit = SubmitField('Добавить')

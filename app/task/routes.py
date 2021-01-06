@@ -4,7 +4,7 @@ from flask_login import login_required
 from app import db
 from app.models import Task
 from app.task import bp
-from app.task.forms import TaskCreateForm
+from app.task.forms import TaskCreateForm, TournamentCreateForm
 
 
 @bp.route('/create', methods=['GET', 'POST'])
@@ -21,7 +21,7 @@ def create():
         db.session.commit()
         flash('Задача создана!')
         return redirect(url_for('main.index'))
-    return render_template('task/create.html', title='Новое задание', form=form)
+    return render_template('task/task_create.html', title='Новое задание', form=form)
 
 
 @bp.route('/list')
@@ -32,7 +32,7 @@ def list():
     tasks = Task.query.order_by(Task.name.desc()).paginate(page, 12, False)
     next_url = url_for('task.list', page=tasks.next_num) if tasks.has_next else None
     prev_url = url_for('task.list', page=tasks.prev_num) if tasks.has_prev else None
-    return render_template('task/taskList.html', title='Список всех задач', tasks=tasks.items, next_url=next_url,
+    return render_template('task/task_list.html', title='Список всех задач', tasks=tasks.items, next_url=next_url,
                            prev_url=prev_url)
 
 
@@ -47,3 +47,10 @@ def delete(id):
     db.session.commit()
     flash('Задача успешно удалена')
     return redirect(url_for('task.list'))
+
+
+@bp.route('/tournament/create', methods=['GET', 'POST'])
+@login_required
+def tournament_create():
+    form = TournamentCreateForm()
+    return render_template('task/tournament_create.html', titile='Создать турнир', form=form)
