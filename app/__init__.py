@@ -6,15 +6,15 @@ from flask_sqlalchemy import SQLAlchemy
 
 from config import Config
 
-app = Flask(__name__)
-app.config.from_object(Config)
-
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 login.login_view = 'auth.login'
 login.login_message = 'Пожалуйста, войдите, чтобы получить доступ к этой странице'
 bootstrap = Bootstrap()
+
+
+# security = Security()
 
 
 def create_app(config_class=Config):
@@ -26,6 +26,12 @@ def create_app(config_class=Config):
     login.init_app(app)
     bootstrap.init_app(app)
 
+    # Flask security
+    # from app.models import Role, User
+    # user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+    # security.init_app(app, user_datastore)
+
+    # Blueprints
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp, url_prefix='/error')
 
