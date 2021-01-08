@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required
 
 from app import db
-from app.models import Task
+from app.models import Task, Tournament
 from app.task import bp
 from app.task.forms import TaskCreateForm, TournamentCreateForm
 
@@ -20,7 +20,7 @@ def create():
         db.session.add(task)
         db.session.commit()
         flash('Задача создана!')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('task.list'))
     return render_template('task/task_create.html', title='Новое задание', form=form)
 
 
@@ -53,4 +53,21 @@ def delete(id):
 @login_required
 def tournament_create():
     form = TournamentCreateForm()
-    return render_template('task/tournament_create.html', titile='Создать турнир', form=form)
+    tasks = Task.query.order_by(Task.name.desc()).all()
+    task_list = [(task.name, task.id) for task in tasks]
+    if form.validate_on_submit():
+        if request.form.get('tasks') is None:
+            flash('Выберите хотя бы одно задание')
+            return redirect(url_for('task.tournament_create'))
+        set = Tournament.query.filter_by(name=form.name.data).first()
+        if set:
+            flash('Турнир с таким именем уже существует')
+            return redirect(url_for('task.tournament_create'))
+        tournament = Tournament(name=form.name.data)
+        for task_id in request.form.getlist('tasks'):
+            task = Task.query.filter_by(id=task_id).first()
+            tournament.tasks.append(task)
+        db.session.commit()
+        flash('Вы создали турнир')
+        return redirect(url_for('main.index'))
+    return render_template('task/tournament_create.html', titile='Создать турнир', form=form, list=task_list)

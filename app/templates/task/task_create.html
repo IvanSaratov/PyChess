@@ -42,12 +42,6 @@
         </div>
     </div>
     <hr>
-    {% for field, errors in form.errors.items() %}
-        <div class="alert alert-info">
-            {{ form[field].label }}: {{ ', '.join(errors) }}
-        </div>
-    {% endfor %}
-
     <form action method="post" class="form" role="form" id="boardForm" name="boardForm">
         {{ form.hidden_tag() }}
         <div class="row">
