@@ -11,6 +11,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(256))
     first_name = db.Column(db.VARCHAR(64))
     last_name = db.Column(db.VARCHAR(64))
+    score = db.Column(db.Integer, default=0)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
