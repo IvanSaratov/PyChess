@@ -69,5 +69,25 @@ def tournament_create():
             tournament.tasks.append(task)
         db.session.commit()
         flash('Вы создали турнир')
-        return redirect(url_for('main.index'))
+        return redirect(url_for('task.tournament_list'))
     return render_template('task/tournament_create.html', titile='Создать турнир', form=form, list=task_list)
+
+
+@bp.route('/tournament/list')
+@login_required
+def tournament_list():
+    tournaments = Tournament.query.order_by(Tournament.id.desc()).all()
+    return render_template('task/tournament_list.html', title='Выбор игры', tournaments=tournaments)
+
+
+@bp.route('/tournament/<id>/delete', methods=['GET'])
+@login_required
+def tournament_delete(id):
+    tournament = Tournament.query.filter_by(id=id).first()
+    if tournament is None:
+        flash('Турнир не найдена')
+        return redirect(url_for('task.tournament_list'))
+    db.session.delete(tournament)
+    db.session.commit()
+    flash('Турнир успешно удален')
+    return redirect(url_for('task.tournament_list'))

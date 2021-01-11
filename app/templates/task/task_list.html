@@ -10,7 +10,7 @@
                         <div class="panel panel-primary">
                             <div class="panel-heading clearfix">
                                 <h3 class="panel-title pull-left">{{ task.name }}</h3>
-                                <a class="btn-sm btn-danger pull-right" href="{{ url_for('task.delete', id=task.id) }}">Удалить</a>
+                                <a class="btn btn-sm btn-danger pull-right" href="{{ url_for('task.delete', id=task.id) }}">Удалить</a>
                             </div>
                             <div class="panel-body">
                                 <div id="board_{{ task.name }}" class="small-board" style="width: 100%"></div>
