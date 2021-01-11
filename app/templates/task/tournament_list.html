@@ -17,7 +17,8 @@
                                 Колличество задач: {{ tournament.tasks|length }}
                             </div>
                             <div class="panel-footer clearfix">
-                                <a href="#" class="btn btn-sm btn-default pull-right">Запустить</a>
+                                <a href="{{ url_for('task.task', tournament_id=tournament.id, task_id=tournament.tasks[0].id) }}"
+                                   class="btn btn-sm btn-default pull-right">Запустить</a>
                             </div>
                         </div>
                     </div>

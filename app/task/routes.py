@@ -7,6 +7,25 @@ from app.task import bp
 from app.task.forms import TaskCreateForm, TournamentCreateForm
 
 
+@bp.route('/tournament/<tournament_id>', methdos=['GET'])
+@bp.route('/tournament/<tournament_id>/<task_id>', methods=['GET', 'POST'])
+@login_required
+def task(tournament_id, task_id):
+    page = request.args.get('page', 1, type=int)
+    tournament = Tournament.query.filter_by(id=tournament_id).first()
+    if tournament is None:
+        flash('Турнир не найден')
+        return redirect(url_for('task.tournament_list'))
+
+    if task_id is None:
+        task_id = tournament.tasks[0].id
+    tasks = tournament.tasks.query.order_by(id=task_id).pagginate(page, 1, False)
+    next_url = url_for('task.task', tournament_id=tournament_id, task_id=tasks.next_num) if tasks.has_next else None
+    prev_url = url_for('task.task', page=tasks.prev_num) if tasks.has_prev else None
+
+    return render_template('task/task.html', title='Выполняется задание ' + task.name, id=tournament.id, task=task)
+
+
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
