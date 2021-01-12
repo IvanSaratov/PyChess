@@ -1,29 +1,47 @@
 from flask import render_template, flash, redirect, url_for, request
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from app import db
-from app.models import Task, Tournament
+from app.models import Task, Tournament, User
 from app.task import bp
 from app.task.forms import TaskCreateForm, TournamentCreateForm
 
 
-@bp.route('/tournament/<tournament_id>', methdos=['GET'])
-@bp.route('/tournament/<tournament_id>/<task_id>', methods=['GET', 'POST'])
+@bp.route('/tournament/<int:tournament_id>/<int:task_id>', methods=['GET', 'POST'])
 @login_required
 def task(tournament_id, task_id):
-    page = request.args.get('page', 1, type=int)
     tournament = Tournament.query.filter_by(id=tournament_id).first()
     if tournament is None:
         flash('Турнир не найден')
         return redirect(url_for('task.tournament_list'))
+    task = Task.query.filter_by(id=task_id).first()
+    if task is None:
+        flash('Задача не найдена')
+        return redirect(url_for('task.tournament_list'))
 
-    if task_id is None:
-        task_id = tournament.tasks[0].id
-    tasks = tournament.tasks.query.order_by(id=task_id).pagginate(page, 1, False)
-    next_url = url_for('task.task', tournament_id=tournament_id, task_id=tasks.next_num) if tasks.has_next else None
-    prev_url = url_for('task.task', page=tasks.prev_num) if tasks.has_prev else None
+    if request.form.get('end_pos'):
+        if task.end_pos == request.form.get('end_pos'):
+            flash('Вы решили задачу верно!')
+            user = User.query.filter_by(id=current_user.id).first()
+            user.score += 1
+            db.session.commit()
 
-    return render_template('task/task.html', title='Выполняется задание ' + task.name, id=tournament.id, task=task)
+            length = len(tournament.tasks)
+            next_page = url_for('main.rating')
+            for i, data in enumerate(tournament.tasks):
+                if data.id is task.id:
+                    if i < length - 1:
+                        next_page = url_for('task.task', tournament_id=tournament.id,
+                                            task_id=tournament.tasks[i + 1].id)
+                    else:
+                        flash('Конец турнира')
+
+            return redirect(next_page)
+        else:
+            flash('Неправильно решение!')
+            return redirect(url_for('task.task', tournament_id=tournament_id, task_id=task_id))
+
+    return render_template('task/task.html', title='Выполняется задание', id=tournament.id, task=task)
 
 
 @bp.route('/create', methods=['GET', 'POST'])

@@ -11,7 +11,7 @@
     <form action="{{ url_for('task.task', tournament_id=id, task_id=task.id) }}" method="post" class="form" role="form"
           id="boardForm"
           name="boardForm">
-        <input type="hidden" id="end_pos" name="end_post" value="{{ task.start_pos }}">
+        <input type="hidden" id="end_pos" name="end_pos" value="{{ task.start_pos }}">
         <input type="submit" class="btn btn-primary" value="Проверить">
     </form>
 {% endblock %}
